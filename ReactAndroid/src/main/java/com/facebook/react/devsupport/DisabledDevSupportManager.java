@@ -12,6 +12,7 @@ package com.facebook.react.devsupport;
 import javax.annotation.Nullable;
 
 import com.facebook.react.bridge.DefaultNativeModuleCallExceptionHandler;
+import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
 import com.facebook.react.bridge.ReactContext;
 import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.devsupport.StackTraceHelper.StackFrame;
@@ -23,10 +24,15 @@ import com.facebook.react.modules.debug.DeveloperSettings;
  */
 public class DisabledDevSupportManager implements DevSupportManager {
 
-  private final DefaultNativeModuleCallExceptionHandler mDefaultNativeModuleCallExceptionHandler;
+  private final NativeModuleCallExceptionHandler mDefaultNativeModuleCallExceptionHandler;
 
-  public DisabledDevSupportManager() {
-    mDefaultNativeModuleCallExceptionHandler = new DefaultNativeModuleCallExceptionHandler();
+  public DisabledDevSupportManager(@Nullable NativeModuleCallExceptionHandler nativeModuleCallExceptionHandler) {
+        if(nativeModuleCallExceptionHandler == null){
+            mDefaultNativeModuleCallExceptionHandler = new DefaultNativeModuleCallExceptionHandler();
+        }
+        else{
+            mDefaultNativeModuleCallExceptionHandler = nativeModuleCallExceptionHandler;
+        }
   }
 
   @Override

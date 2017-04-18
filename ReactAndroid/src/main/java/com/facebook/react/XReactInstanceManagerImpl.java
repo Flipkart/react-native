@@ -304,7 +304,7 @@ import static com.facebook.systrace.Systrace.TRACE_TAG_REACT_JAVA_BRIDGE;
         mDevInterface,
         mJSMainModuleName,
         useDeveloperSupport,
-        redBoxHandler);
+        redBoxHandler, nativeModuleCallExceptionHandler);
     mBridgeIdleDebugListener = bridgeIdleDebugListener;
     mLifecycleState = initialLifecycleState;
     mUIImplementationProvider = uiImplementationProvider;

@@ -15,6 +15,8 @@ import java.lang.reflect.Constructor;
 
 import android.content.Context;
 
+import com.facebook.react.bridge.NativeModuleCallExceptionHandler;
+
 /**
  * A simple factory that creates instances of {@link DevSupportManager} implementations. Uses
  * reflection to create DevSupportManagerImpl if it exists. This allows ProGuard to strip that class
@@ -30,14 +32,15 @@ public class DevSupportManagerFactory {
       Context applicationContext,
       ReactInstanceDevCommandsHandler reactInstanceCommandsHandler,
       @Nullable String packagerPathForJSBundleName,
-      boolean enableOnCreate) {
+      boolean enableOnCreate,
+      @Nullable NativeModuleCallExceptionHandler nativeModuleCallExceptionHandler) {
 
     return create(
       applicationContext,
       reactInstanceCommandsHandler,
       packagerPathForJSBundleName,
       enableOnCreate,
-      null);
+      null, nativeModuleCallExceptionHandler);
   }
 
   public static DevSupportManager create(
@@ -45,9 +48,10 @@ public class DevSupportManagerFactory {
     ReactInstanceDevCommandsHandler reactInstanceCommandsHandler,
     @Nullable String packagerPathForJSBundleName,
     boolean enableOnCreate,
-    @Nullable RedBoxHandler redBoxHandler) {
+    @Nullable RedBoxHandler redBoxHandler,
+    @Nullable NativeModuleCallExceptionHandler nativeModuleCallExceptionHandler) {
     if (!enableOnCreate) {
-      return new DisabledDevSupportManager();
+      return new DisabledDevSupportManager(nativeModuleCallExceptionHandler);
     }
     try {
       // ProGuard is surprisingly smart in this case and will keep a class if it detects a call to

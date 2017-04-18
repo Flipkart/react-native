@@ -326,7 +326,7 @@ import static com.facebook.react.bridge.ReactMarkerConstants.RUN_JS_BUNDLE_START
         mDevInterface,
         mJSMainModuleName,
         useDeveloperSupport,
-        mRedBoxHandler);
+        mRedBoxHandler, nativeModuleCallExceptionHandler);
     mBridgeIdleDebugListener = bridgeIdleDebugListener;
     mLifecycleState = initialLifecycleState;
     mUIImplementationProvider = uiImplementationProvider;
