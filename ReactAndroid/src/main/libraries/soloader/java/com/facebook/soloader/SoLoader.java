@@ -177,7 +177,12 @@ public class SoLoader {
 
         try {
             if (sExtractNativeLibsDisabled) {
-                loadLibraryDirectly(shortName);
+                try {
+                    loadLibraryBySoName(System.mapLibraryName(shortName), 0);
+                } catch (UnsatisfiedLinkError e) {
+                    Log.d("REACT-WARN", "So Load failed from extract lib path, attempting regular load");
+                    loadLibraryDirectly(shortName);
+                }
             } else {
                 loadLibraryBySoName(System.mapLibraryName(shortName), 0);
             }
@@ -226,10 +231,7 @@ public class SoLoader {
     /* package */
     static void loadLibraryDirectly(String shortName) {
         String soName = System.mapLibraryName(shortName);
-        int result = sLoadedLibraries.contains(soName)
-                ? SoSource.LOAD_RESULT_LOADED
-                : SoSource.LOAD_RESULT_NOT_FOUND;
-        if (result == SoSource.LOAD_RESULT_NOT_FOUND) {
+        if (!sLoadedLibraries.contains(soName)) {
             System.loadLibrary(shortName);
             sLoadedLibraries.add(soName);
         }
