@@ -51,8 +51,6 @@ public class SoLoader {
     /* package */ static final String TAG = "SoLoader";
     /* package */ static final boolean DEBUG = false;
 
-    /* package */ static boolean sExtractNativeLibsDisabled = true;
-
     /**
      * Ordered list of sources to consult when trying to load a shared library or one of its
      * dependencies.  {@code null} indicates that SoLoader is uninitialized.
@@ -176,15 +174,20 @@ public class SoLoader {
         }
 
         try {
-            if (sExtractNativeLibsDisabled) {
-                try {
-                    loadLibraryBySoName(System.mapLibraryName(shortName), 0);
-                } catch (UnsatisfiedLinkError e) {
-                    Log.d("REACT-WARN", "So Load failed from extract lib path, attempting regular load");
-                    loadLibraryDirectly(shortName);
+            String soName = System.mapLibraryName(shortName);
+            try {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    loadLibraryDirectly(shortName, soName);
+                } else {
+                    loadLibraryBySoName(soName, 0);
                 }
-            } else {
-                loadLibraryBySoName(System.mapLibraryName(shortName), 0);
+            } catch (UnsatisfiedLinkError e) {
+                Log.d("REACT-WARN", "So Load failed from extract lib path, attempting alternate approach");
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+                    loadLibraryDirectly(shortName, soName);
+                } else {
+                    throw e;
+                }
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
@@ -229,8 +232,7 @@ public class SoLoader {
     }
 
     /* package */
-    static void loadLibraryDirectly(String shortName) {
-        String soName = System.mapLibraryName(shortName);
+    static void loadLibraryDirectly(String shortName, String soName) {
         if (!sLoadedLibraries.contains(soName)) {
             System.loadLibrary(shortName);
             sLoadedLibraries.add(soName);
