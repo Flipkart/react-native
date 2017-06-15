@@ -173,21 +173,32 @@ public class SoLoader {
             }
         }
 
+//Code to support extractNativeLibs = false
+//        try {
+//            String soName = System.mapLibraryName(shortName);
+//            try {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//                    loadLibraryDirectly(shortName, soName);
+//                } else {
+//                    loadLibraryBySoName(soName, 0);
+//                }
+//            } catch (IOException e) {
+//                Log.d("REACT-WARN", "So Load failed from extract lib path, attempting alternate approach");
+//                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//                    loadLibraryDirectly(shortName, soName);
+//                } else {
+//                    throw e;
+//                }
+//            }
+//        } catch (IOException ex) {
+//            throw new RuntimeException(ex);
+//        }
         try {
             String soName = System.mapLibraryName(shortName);
             try {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    loadLibraryDirectly(shortName, soName);
-                } else {
-                    loadLibraryBySoName(soName, 0);
-                }
+                loadLibraryBySoName(soName, 0);
             } catch (UnsatisfiedLinkError e) {
-                Log.d("REACT-WARN", "So Load failed from extract lib path, attempting alternate approach");
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-                    loadLibraryDirectly(shortName, soName);
-                } else {
-                    throw e;
-                }
+                loadLibraryDirectly(shortName, soName);
             }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
