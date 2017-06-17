@@ -104,6 +104,14 @@ public class ReactScrollViewManager
     view.setEndFillColor(color);
   }
 
+  /**
+   * Controls overScroll behaviour
+   */
+  @ReactProp(name = "overScrollMode")
+  public void setOverScrollMode(ReactScrollView view, String value) {
+    view.setOverScrollMode(ReactScrollViewHelper.parseOverScrollMode(value));
+  }
+
   @Override
   public @Nullable Map<String, Integer> getCommandsMap() {
     return ReactScrollViewCommandHelper.getCommandsMap();
